@@ -1,0 +1,4 @@
+Bright color contrasted with dark color.
+
+Primary: 0.9 saturation, 1.0 value
+Secondary: 0.9 saturation, 0.3 value
