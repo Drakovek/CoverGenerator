@@ -10,7 +10,7 @@ with open("README.md", "r") as file:
 
 setuptools.setup(
     name="CoverGenerator",
-    version="0.1.0",
+    version="0.1.1",
     author="Drakovek",
     author_email="DrakovekMail@gmail.com",
     description="Python utility for generating cover images for e-books.",

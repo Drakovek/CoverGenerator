@@ -101,8 +101,9 @@ def generate_border_layout(title:str, author:str, background_color:str, foregrou
     # Create the title text
     text_color = cc.get_text_color(background_color)
     font_style = f"font-style:normal;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
+    max_lines = fh.get_optimized_line_number(title, glyph_sizes)
     title_svg = get_multiline_svg(title, glyph_sizes, 600, 120, width=960, height=740,
-            font_style=font_style, text_anchor="middle", dominant_baseline="hanging")
+            font_style=font_style, text_anchor="middle", dominant_baseline="hanging", max_lines=max_lines)
     svg = f"{svg}{title_svg}"
     # Create the author text
     author_svg = get_multiline_svg(author, glyph_sizes, 600, 1480, width=960, height=400,
@@ -136,8 +137,9 @@ def generate_bubble_layout(title:str, author:str, background_color:str, foregrou
     # Create the title text
     text_color = cc.get_text_color(foreground_color)
     font_style = f"font-style:italic;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
-    title_svg = get_multiline_svg(title, italic_glyph_sizes, 600, 0, width=980, height=800,
-            font_style=font_style, text_anchor="middle", dominant_baseline="central")
+    max_lines = fh.get_optimized_line_number(title, italic_glyph_sizes)
+    title_svg = get_multiline_svg(title, italic_glyph_sizes, 600, 0, width=980, height=1000,
+            font_style=font_style, text_anchor="middle", dominant_baseline="central", max_lines=max_lines)
     # Create the title bubble
     lines = len(re.findall(r"<tspan", title_svg))
     font_size = int(re.findall("(?<=style=\"font-size:)[0-9]+(?=px)", title_svg)[0])
@@ -151,7 +153,7 @@ def generate_bubble_layout(title:str, author:str, background_color:str, foregrou
     # Create the author text
     text_color = cc.get_text_color(background_color)
     font_style = f"font-style:normal;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
-    author_svg = get_multiline_svg(author, bold_glyph_sizes, 600, 1540, width=1100, height=500,
+    author_svg = get_multiline_svg(author, bold_glyph_sizes, 600, 1540, width=1100, height=400,
             font_style=font_style, text_anchor="middle", dominant_baseline="alphabetic", max_lines=1)
     svg = f"{svg}{author_svg}"
     # Encapsulate the svg file
@@ -184,8 +186,9 @@ def generate_cross_layout(title:str, author:str, background_color:str, foregroun
     # Create the title element
     text_color = cc.get_text_color(background_color)
     font_style = f"font-style:italic;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
+    max_lines = fh.get_optimized_line_number(title, glyph_sizes)
     title_svg = get_multiline_svg(title, glyph_sizes, 360, 460, width=840, height=1000,
-            font_style=font_style, text_anchor="start", dominant_baseline="hanging")
+            font_style=font_style, text_anchor="start", dominant_baseline="hanging", max_lines=max_lines)
     svg = f"{svg}{title_svg}"
     # Create the author element
     author_svg = get_multiline_svg(author, glyph_sizes, 360, 340, width=840, height=300,
@@ -283,7 +286,13 @@ def main():
     Sets up the parser for the user generate cover images.
     """
     # Set up argument parser
-    parser = argparse.ArgumentParser()
+    categories = []
+    for palette in cc.get_all_palettes():
+        if not palette["category"] in categories:
+            categories.append(palette["category"])
+    help_text = ", ".join(sorted(categories))
+    help_text = f"Styles: border, bubble, cross | Palettes: {help_text}"
+    parser = argparse.ArgumentParser(epilog=help_text)
     parser.add_argument(
         "-t",
         "--title",
@@ -327,3 +336,4 @@ def main():
     args = parser.parse_args()
     generate_cover(args.title, args.author, abspath(args.output), width=args.width,
             cover_style=args.style, palette_category=args.palette)
+        

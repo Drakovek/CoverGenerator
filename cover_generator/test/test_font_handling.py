@@ -74,6 +74,20 @@ def test_max_word_wrap():
     assert fh.max_word_wrap(text, glyph_sizes, 15) == ["One:", "To Three"]
     text = "A Long Phrase: A Small Title"
     assert fh.max_word_wrap(text, glyph_sizes, 5) == ["A Long", "Phrase:", "A Small Title"]
+    
+def test_get_optimized_line_number():
+    """
+    Tests the get_optimized_line_number function.
+    """
+    # Test with short text
+    glyph_sizes = fh.get_glyph_sizes("NotoSerif-Bold.ttf")
+    assert fh.get_optimized_line_number("A", glyph_sizes) == 3
+    assert fh.get_optimized_line_number("A Short Title", glyph_sizes) == 3
+    # Test with longer text
+    text = "THIS STRING IS HONESTLY FAR TOO LONG FOR A TITLE"
+    assert fh.get_optimized_line_number(text, glyph_sizes) == 5
+    # Test with very long text
+    assert fh.get_optimized_line_number("A"*200, glyph_sizes) == 6
 
 def test_get_text_size():
     """

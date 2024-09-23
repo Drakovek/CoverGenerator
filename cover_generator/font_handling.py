@@ -112,7 +112,7 @@ def word_wrap(text:str, glyph_sizes:dict, max_width:float) -> List[str]:
     # Return the lines
     return lines
 
-def max_word_wrap(text:str, glyph_sizes:dict, min_width:float=3.0, max_lines:int=3) -> List[str]:
+def max_word_wrap(text:str, glyph_sizes:dict, min_width:float=4.0, max_lines:int=3) -> List[str]:
     """
     Splits given text into lines, with each line allowing at least the minimum width.
     Lines will allow at least as wide as the width of the longest word in the string.
@@ -150,6 +150,28 @@ def max_word_wrap(text:str, glyph_sizes:dict, min_width:float=3.0, max_lines:int
         lines = max_word_wrap(text, glyph_sizes, min_width + 0.5, max_lines)
     # Return the text with word wrapping
     return lines
+
+def get_optimized_line_number(text:str, glyph_sizes:dict) -> int:
+    """
+    Determine the optimized maximum number of lines for a given text
+    
+    :param text: Text to be split into multiple lines
+    :type text: str, required
+    :param glyph_sizes: Dictionary of width and height for each glyph
+    :type glyph_sizes: dict, required
+    :return: Maximum number of lines
+    :rytpe: int
+    """
+    # Determine the maximum number of lines appropriate for the text
+    width = get_string_size(re.sub(r"\s+", " ", text).strip(), glyph_sizes)[0]
+    max_lines = math.floor(width / 6)
+    # Adjust the max lines if it is too small or too big
+    if max_lines < 3:
+        max_lines = 3
+    if max_lines > 6:
+        max_lines = 6
+    # Return the maximum line number
+    return max_lines
 
 def get_text_size(lines:str, glyph_sizes:dict, width:int, height:int,
             height_multiplier:float=1.1) -> int:
