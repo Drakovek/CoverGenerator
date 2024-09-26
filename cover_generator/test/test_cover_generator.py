@@ -63,73 +63,76 @@ def test_generate_border_layout():
     """
     Tests the generate_border_layout function.
     """
-    border = cg.generate_border_layout("This is a title!!!", "Author Person",
-            background_color="#e01010", foreground_color="#202020")
+    border = cg.generate_border_layout("A simple title", "Author",
+            background_color="#e01010", foreground_color="#004e00")
     compare = "<svg viewBox=\"0 0 1200 1600\" xmlns=\"http://www.w3.org/2000/svg\">"
     compare = f"{compare}<defs><style type=\"text/css\" /></defs>"
-    compare = f"{compare}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"#e01010\" />"
-    compare = f"{compare}<rect x=\"20\" y=\"20\" width=\"1160\" height=\"1560\" fill=\"#202020\"/>"
+    compare = f"{compare}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"#e01010\"/>"
+    compare = f"{compare}<rect x=\"20\" y=\"20\" width=\"1160\" height=\"1560\" fill=\"#004e00\"/>"
     compare = f"{compare}<rect x=\"40\" y=\"40\" width=\"1120\" height=\"1520\" fill=\"#e01010\"/>"
-    compare = f"{compare}<rect x=\"50\" y=\"50\" width=\"1100\" height=\"1500\" fill=\"#202020\"/>"
+    compare = f"{compare}<rect x=\"50\" y=\"50\" width=\"1100\" height=\"1500\" fill=\"#004e00\"/>"
     compare = f"{compare}<rect x=\"60\" y=\"60\" width=\"1080\" height=\"1480\" fill=\"#e01010\"/>"
-    compare = f"{compare}<text y=\"120\" text-anchor=\"middle\" dominant-baseline=\"hanging\" "
-    compare = f"{compare}style=\"font-size:224px;font-style:normal;font-weight:bold;"
+    compare = f"{compare}<g transform=\"translate(0, 166)\">"
+    compare = f"{compare}<text y=\"705\" text-anchor=\"middle\" dominant-baseline=\"alphabetic\" "
+    compare = f"{compare}style=\"font-size:214px;font-style:normal;font-weight:bold;"
     compare = f"{compare}font-family:Noto Serif,Serif;fill:#000000\">"
-    compare = f"{compare}<tspan x=\"600\" dy=\"0\">This is</tspan>"
-    compare = f"{compare}<tspan x=\"600\" dy=\"246\">a</tspan>"
-    compare = f"{compare}<tspan x=\"600\" dy=\"246\">title!!!</tspan>"
-    compare = f"{compare}</text><text y=\"1480\" text-anchor=\"middle\" "
-    compare = f"{compare}dominant-baseline=\"alphabetic\" style=\"font-size:110px;font-style:normal;"
-    compare = f"{compare}font-weight:bold;font-family:Noto Serif,Serif;fill:#000000\">"
-    compare = f"{compare}<tspan x=\"600\" dy=\"0\">Author Person</tspan></text></svg>"
+    compare = f"{compare}<tspan x=\"600\" dy=\"0\">TITLE</tspan><tspan x=\"600\" dy=\"-235\">SIMPLE</tspan>"
+    compare = f"{compare}<tspan x=\"600\" dy=\"-235\">A</tspan></text>"
+    compare = f"{compare}<g transform=\"translate(0, 785)\">"
+    compare = f"{compare}<polygon points=\"120,15 125,10 560,5 570,15 560,25 125,20\" fill=\"#004e00\" />"
+    compare = f"{compare}<polygon points=\"1080,15 1075,10 640,5 630,15 640,25 1075,20\" fill=\"#004e00\" />"
+    compare = f"{compare}<circle cx=\"600\" cy=\"15\" r=\"15\" fill=\"#004e00\" /></g>"
+    compare = f"{compare}<text y=\"845\" text-anchor=\"middle\" dominant-baseline=\"hanging\" "
+    compare = f"{compare}style=\"font-size:189px;font-style:normal;font-weight:bold;"
+    compare = f"{compare}font-family:Noto Serif,Serif;fill:#000000\">"
+    compare = f"{compare}<tspan x=\"600\" dy=\"0\">AUTHOR</tspan></text></g></svg>"
     assert border == compare
 
 def test_generate_bubble_layout():
     """
     Tests the generate_bubble_layout fuction.
     """
-    bubble = cg.generate_bubble_layout("A BASIC TITLE", "ARTIST",
-            background_color="#0101010", foreground_color="#ff0000")
-    bold_font = abspath(join(fh.FONT_DIRECTORY, "NotoSerif-Bold.ttf"))
-    italic_font = abspath(join(fh.FONT_DIRECTORY, "NotoSerif-BoldItalic.ttf"))
+    bubble = cg.generate_bubble_layout("Some Title", "Artist",
+            background_color="#000030", foreground_color="#ff0000")
     compare = "<svg viewBox=\"0 0 1200 1600\" xmlns=\"http://www.w3.org/2000/svg\">"
-    compare = f"{compare}<defs><style type=\"text/css\" /></defs>"
-    compare = f"{compare}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"#0101010\" />"
-    compare = f"{compare}<rect x=\"80\" y=\"80\" width=\"1040\" height=\"893\" rx=\"40\" ry=\"40\" "
-    compare = f"{compare}fill=\"#ff0000\" />"
-    compare = f"{compare}<text y=\"526.5\" text-anchor=\"middle\" dominant-baseline=\"central\" "
-    compare = f"{compare}style=\"font-size:271px;font-style:italic;font-weight:bold;"
-    compare = f"{compare}font-family:Noto Serif,Serif;fill:#000000\">"
-    compare = f"{compare}<tspan x=\"600\" dy=\"-298\">A</tspan><tspan x=\"600\" dy=\"298\">BASIC</tspan>"
-    compare = f"{compare}<tspan x=\"600\" dy=\"298\">TITLE</tspan></text>"
+    compare = f"{compare}<defs><style type=\"text/css\" />"
+    compare = f"{compare}</defs><rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"#000030\" />"
     compare = f"{compare}<text y=\"1540\" text-anchor=\"middle\" dominant-baseline=\"alphabetic\" "
     compare = f"{compare}style=\"font-size:252px;font-style:normal;font-weight:bold;"
     compare = f"{compare}font-family:Noto Serif,Serif;fill:#ffffff\">"
-    compare = f"{compare}<tspan x=\"600\" dy=\"0\">ARTIST</tspan></text></svg>"
+    compare = f"{compare}<tspan x=\"600\" dy=\"0\">ARTIST</tspan></text><g transform=\"translate(0 218)\">"
+    compare = f"{compare}<rect x=\"80\" y=\"0\" width=\"1040\" height=\"634\" "
+    compare = f"{compare}rx=\"40\" ry=\"40\" fill=\"#ff0000\" />"
+    compare = f"{compare}<g transform=\"translate(0, 317)\">"
+    compare = f"{compare}<text y=\"0\" text-anchor=\"middle\" dominant-baseline=\"central\" "
+    compare = f"{compare}style=\"font-size:277px;font-style:italic;font-weight:bold;"
+    compare = f"{compare}font-family:Noto Serif,Serif;fill:#000000\">"
+    compare = f"{compare}<tspan x=\"600\" dy=\"-152\">SOME</tspan>"
+    compare = f"{compare}<tspan x=\"600\" dy=\"304\">TITLE</tspan></text></g></g></svg>"
     assert bubble == compare
 
 def test_generate_cross_layout():
     """
     Tests the generate_cross_layout function.
     """
-    cross = cg.generate_cross_layout("A Different Title", "New Artist",
-            background_color="#010101", foreground_color="#eee1e1")
-    font = abspath(join(fh.FONT_DIRECTORY, "NotoSerif-BoldItalic.ttf"))
-    compare = "<svg viewBox=\"0 0 1200 1600\" xmlns=\"http://www.w3.org/2000/svg\">"
-    compare = f"{compare}<defs><style type=\"text/css\" /></defs>"
-    compare = f"{compare}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"#010101\" />"
-    compare = f"{compare}<rect x=\"280\" y=\"-1\" width=\"40\" height=\"1602\" fill=\"#eee1e1\" />"
-    compare = f"{compare}<rect x=\"-1\" y=\"380\" width=\"1202\" height=\"40\" fill=\"#eee1e1\" />"
-    compare = f"{compare}<text y=\"460\" text-anchor=\"start\" dominant-baseline=\"hanging\" "
-    compare = f"{compare}style=\"font-size:151px;font-style:italic;font-weight:bold;"
-    compare = f"{compare}font-family:Noto Serif,Serif;fill:#ffffff\">"
-    compare = f"{compare}<tspan x=\"360\" dy=\"0\">A</tspan>"
-    compare = f"{compare}<tspan x=\"360\" dy=\"166\">Different</tspan>"
-    compare = f"{compare}<tspan x=\"360\" dy=\"166\">Title</tspan></text>"
-    compare = f"{compare}<text y=\"340\" text-anchor=\"start\" dominant-baseline=\"alphabetic\" "
-    compare = f"{compare}style=\"font-size:129px;font-style:italic;font-weight:bold;"
-    compare = f"{compare}font-family:Noto Serif,Serif;fill:#ffffff\">"
-    compare = f"{compare}<tspan x=\"360\" dy=\"0\">New Artist</tspan></text></svg>"
+    cross = cg.generate_cross_layout("A Different Title", "New Artists",
+            background_color="#ff0101", foreground_color="#eee1e1")
+    compare = "<svg viewBox=\"0 0 1200 1600\" xmlns=\"http://www.w3.org/2000/svg\"><defs>"
+    compare = f"{compare}<style type=\"text/css\" /></defs>"
+    compare = f"{compare}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"#ff0101\" />"
+    compare = f"{compare}<rect x=\"240\" y=\"-1\" width=\"80\" height=\"1602\" fill=\"#eee1e1\" />"
+    compare = f"{compare}<rect x=\"-1\" y=\"380\" width=\"1202\" height=\"80\" fill=\"#eee1e1\" />"
+    compare = f"{compare}<text y=\"480\" text-anchor=\"start\" dominant-baseline=\"hanging\" "
+    compare = f"{compare}style=\"font-size:148px;font-style:italic;font-weight:bold;"
+    compare = f"{compare}font-family:Noto Serif,Serif;fill:#000000\">"
+    compare = f"{compare}<tspan x=\"380\" dy=\"0\">A</tspan>"
+    compare = f"{compare}<tspan x=\"380\" dy=\"162\">Different</tspan>"
+    compare = f"{compare}<tspan x=\"380\" dy=\"162\">Title</tspan></text>"
+    compare = f"{compare}<text y=\"300\" text-anchor=\"start\" dominant-baseline=\"alphabetic\" "
+    compare = f"{compare}style=\"font-size:127px;font-style:italic;font-weight:bold;"
+    compare = f"{compare}font-family:Noto Serif,Serif;fill:#000000\">"
+    compare = f"{compare}<tspan x=\"380\" dy=\"0\">Artists</tspan>"
+    compare = f"{compare}<tspan x=\"380\" dy=\"-139\">New</tspan></text></svg>"
     assert cross == compare
 
 def test_write_layout_to_image():

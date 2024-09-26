@@ -92,23 +92,37 @@ def generate_border_layout(title:str, author:str, background_color:str, foregrou
     glyph_sizes = fh.get_glyph_sizes("NotoSerif-Bold.json")
     # Create the background
     svg = f"<defs><style type=\"text/css\" /></defs>"
-    svg = f"{svg}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"{background_color}\" />"
+    svg = f"{svg}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"{background_color}\"/>"
     # Create the border
     svg = f"{svg}<rect x=\"20\" y=\"20\" width=\"1160\" height=\"1560\" fill=\"{foreground_color}\"/>"
     svg = f"{svg}<rect x=\"40\" y=\"40\" width=\"1120\" height=\"1520\" fill=\"{background_color}\"/>"
     svg = f"{svg}<rect x=\"50\" y=\"50\" width=\"1100\" height=\"1500\" fill=\"{foreground_color}\"/>"
     svg = f"{svg}<rect x=\"60\" y=\"60\" width=\"1080\" height=\"1480\" fill=\"{background_color}\"/>"
+    # Create the middle separator element
+    separator = f"<polygon points=\"120,15 125,10 560,5 570,15 560,25 125,20\" fill=\"{foreground_color}\" />"
+    separator = f"{separator}<polygon points=\"1080,15 1075,10 640,5 630,15 640,25 1075,20\""
+    separator = f"{separator} fill=\"{foreground_color}\" />"
+    separator = f"{separator}<circle cx=\"600\" cy=\"15\" r=\"15\" fill=\"{foreground_color}\" />"
+    separator = f"<g transform=\"translate(0, 785)\">{separator}</g>"
     # Create the title text
     text_color = cc.get_text_color(background_color)
     font_style = f"font-style:normal;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
-    max_lines = fh.get_optimized_line_number(title, glyph_sizes)
-    title_svg = get_multiline_svg(title, glyph_sizes, 600, 120, width=960, height=740,
-            font_style=font_style, text_anchor="middle", dominant_baseline="hanging", max_lines=max_lines)
-    svg = f"{svg}{title_svg}"
+    max_lines = fh.get_optimized_line_number(title.upper(), glyph_sizes)
+    title_svg = get_multiline_svg(title.upper(), glyph_sizes, 600, 705, width=960, height=740,
+            font_style=font_style, text_anchor="middle", dominant_baseline="alphabetic", max_lines=max_lines)
     # Create the author text
-    author_svg = get_multiline_svg(author, glyph_sizes, 600, 1480, width=960, height=400,
-            font_style=font_style, text_anchor="middle", dominant_baseline="alphabetic", max_lines=1)
-    svg = f"{svg}{author_svg}"
+    author_svg = get_multiline_svg(author.upper(), glyph_sizes, 600, 845, width=960, height=400,
+            font_style=font_style, text_anchor="middle", dominant_baseline="hanging", max_lines=2)
+    # Offset the full text block
+    title_lines = len(re.findall(r"<tspan", title_svg))
+    title_font_size = int(re.findall("(?<=style=\"font-size:)[0-9]+(?=px)", title_svg)[0])
+    title_height = (title_lines * title_font_size) * 1.1
+    author_lines = len(re.findall(r"<tspan", author_svg))
+    author_font_size = int(re.findall("(?<=style=\"font-size:)[0-9]+(?=px)", author_svg)[0])
+    author_height = (author_lines * author_font_size) * 1.1
+    block_offset = math.floor((title_height - author_height) / 3)
+    text_block = f"<g transform=\"translate(0, {block_offset})\">{title_svg}{separator}{author_svg}</g>"
+    svg = f"{svg}{text_block}"
     # Encapsulate the SVG
     svg = f"<svg viewBox=\"0 0 1200 1600\" xmlns=\"http://www.w3.org/2000/svg\">{svg}</svg>"
     return svg
@@ -137,25 +151,34 @@ def generate_bubble_layout(title:str, author:str, background_color:str, foregrou
     # Create the title text
     text_color = cc.get_text_color(foreground_color)
     font_style = f"font-style:italic;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
-    max_lines = fh.get_optimized_line_number(title, italic_glyph_sizes)
-    title_svg = get_multiline_svg(title, italic_glyph_sizes, 600, 0, width=980, height=1000,
+    max_lines = fh.get_optimized_line_number(title.upper(), italic_glyph_sizes)
+    title_svg = get_multiline_svg(title.upper(), italic_glyph_sizes, 600, 0, width=980, height=1000,
             font_style=font_style, text_anchor="middle", dominant_baseline="central", max_lines=max_lines)
     # Create the title bubble
-    lines = len(re.findall(r"<tspan", title_svg))
-    font_size = int(re.findall("(?<=style=\"font-size:)[0-9]+(?=px)", title_svg)[0])
-    bubble_height = (font_size * lines) + 80
-    svg = f"{svg}<rect x=\"80\" y=\"80\" width=\"1040\" height=\"{bubble_height}\" rx=\"40\" ry=\"40\" "
-    svg = f"{svg}fill=\"{foreground_color}\" />"
-    # Add the title text
-    y = (bubble_height/2) + 80
-    title_svg = re.sub("<text y=\"[0-9]+\"", f"<text y=\"{y}\"", title_svg)
-    svg = f"{svg}{title_svg}"
+    title_lines = len(re.findall(r"<tspan", title_svg))
+    title_font_size = int(re.findall("(?<=style=\"font-size:)[0-9]+(?=px)", title_svg)[0])
+    bubble_height = (title_font_size * title_lines) + 80
+    if bubble_height < 500:
+        bubble_height = 500
+    bubble_svg = f"<rect x=\"80\" y=\"0\" width=\"1040\" height=\"{bubble_height}\" rx=\"40\" ry=\"40\" "
+    bubble_svg = f"{bubble_svg}fill=\"{foreground_color}\" />"
     # Create the author text
     text_color = cc.get_text_color(background_color)
     font_style = f"font-style:normal;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
-    author_svg = get_multiline_svg(author, bold_glyph_sizes, 600, 1540, width=1100, height=400,
-            font_style=font_style, text_anchor="middle", dominant_baseline="alphabetic", max_lines=1)
+    author_svg = get_multiline_svg(author.upper(), bold_glyph_sizes, 600, 1540, width=1100, height=400,
+            font_style=font_style, text_anchor="middle", dominant_baseline="alphabetic", max_lines=2)
     svg = f"{svg}{author_svg}"
+    # Create full bubble section
+    y = math.floor(bubble_height/2)
+    full_bubble = f"{bubble_svg}<g transform=\"translate(0, {y})\">{title_svg}</g>"
+    author_lines = len(re.findall(r"<tspan", author_svg))
+    author_font_size = int(re.findall("(?<=style=\"font-size:)[0-9]+(?=px)", author_svg)[0])
+    author_height = author_lines * author_font_size
+    bubble_offset = math.floor(((1540 - author_height) - bubble_height) / 3)
+    full_bubble = f"<g transform=\"translate(0 {bubble_offset})\">{full_bubble}</g>"
+    svg = f"{svg}{full_bubble}"
+    
+    
     # Encapsulate the svg file
     svg = f"<svg viewBox=\"0 0 1200 1600\" xmlns=\"http://www.w3.org/2000/svg\">{svg}</svg>"
     return svg
@@ -181,18 +204,18 @@ def generate_cross_layout(title:str, author:str, background_color:str, foregroun
     svg = f"<defs><style type=\"text/css\" /></defs>"
     svg = f"{svg}<rect x=\"-1\" y=\"-1\" width=\"1202\" height=\"1602\" fill=\"{background_color}\" />"
     # Create the cross
-    svg = f"{svg}<rect x=\"280\" y=\"-1\" width=\"40\" height=\"1602\" fill=\"{foreground_color}\" />"
-    svg = f"{svg}<rect x=\"-1\" y=\"380\" width=\"1202\" height=\"40\" fill=\"{foreground_color}\" />"
+    svg = f"{svg}<rect x=\"240\" y=\"-1\" width=\"80\" height=\"1602\" fill=\"{foreground_color}\" />"
+    svg = f"{svg}<rect x=\"-1\" y=\"380\" width=\"1202\" height=\"80\" fill=\"{foreground_color}\" />"
     # Create the title element
     text_color = cc.get_text_color(background_color)
     font_style = f"font-style:italic;font-weight:bold;font-family:Noto Serif,Serif;fill:{text_color}"
     max_lines = fh.get_optimized_line_number(title, glyph_sizes)
-    title_svg = get_multiline_svg(title, glyph_sizes, 360, 460, width=840, height=1000,
+    title_svg = get_multiline_svg(title, glyph_sizes, 380, 480, width=820, height=800,
             font_style=font_style, text_anchor="start", dominant_baseline="hanging", max_lines=max_lines)
     svg = f"{svg}{title_svg}"
     # Create the author element
-    author_svg = get_multiline_svg(author, glyph_sizes, 360, 340, width=840, height=300,
-            font_style=font_style, text_anchor="start", dominant_baseline="alphabetic", max_lines=1)
+    author_svg = get_multiline_svg(author, glyph_sizes, 380, 300, width=820, height=280,
+            font_style=font_style, text_anchor="start", dominant_baseline="alphabetic", max_lines=2)
     svg = f"{svg}{author_svg}"
     # Encapsulate the svg file
     svg = f"<svg viewBox=\"0 0 1200 1600\" xmlns=\"http://www.w3.org/2000/svg\">{svg}</svg>"

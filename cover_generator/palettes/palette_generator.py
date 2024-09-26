@@ -2,7 +2,7 @@ import os
 import json
 import cover_generator.color as cc
 import cover_generator.cover_generator as cg
-from os.path import abspath, join
+from os.path import abspath, exists, join
 
 def user_generate_palettes():
     """
@@ -40,17 +40,27 @@ def user_generate_palettes():
     palette = cc.generate_offset_palette(palette_name, palette_category, hue_offset,
             primary_saturation=primary_saturation, primary_value=primary_value,
             secondary_saturation=secondary_saturation, secondary_value=secondary_value)
+    # Run through all pairs in the palette
+    base_directory = abspath(os.getcwd())
+    palette_directory = abspath(join(base_directory, palette_name))
+    if not exists(palette_directory):
+        os.mkdir(palette_directory)
+    for pair in palette["color_pairs"]:
+        identifier = str(pair['id']).zfill(2)
+        # Write border layout
+        cover_image = abspath(join(palette_directory, f"[{identifier}] {palette_name} (border).png"))
+        svg = cg.generate_border_layout("Palette Tester", "Author", pair["primary_color"], pair["secondary_color"])
+        cg.write_layout_to_image(svg, cover_image)
+        # Write bubble layout
+        cover_image = abspath(join(palette_directory, f"[{identifier}] {palette_name} (bubble).png"))
+        svg = cg.generate_bubble_layout("Palette Tester", "Author", pair["primary_color"], pair["secondary_color"])
+        cg.write_layout_to_image(svg, cover_image)
+        # Save Cover Image
+        print(f"{palette_name} ({identifier})")
     # Save palette as a json file
-    palette_file = abspath(join(os.getcwd(), f"{palette_name}.json"))
+    palette_file = abspath(join(palette_directory, f"{palette_name}.json"))
     with open(palette_file, "w", encoding="UTF-8") as out_file:
         out_file.write(json.dumps(palette, indent="   ", separators=(", ", ": ")))
-    # Run through all pairs in the palette
-    for pair in palette["color_pairs"]:
-        cover_image = abspath(join(os.getcwd(), f"[{pair['id']}] {palette_name}.png"))
-        svg = cg.generate_bubble_layout("PALETTE TESTING", "PERSON", pair["primary_color"], pair["secondary_color"])
-        # Save Cover Image
-        print(f"{palette_name} ({pair['id']})")
-        cg.write_layout_to_image(svg, cover_image)
 
 if __name__ == "__main__":
     user_generate_palettes()

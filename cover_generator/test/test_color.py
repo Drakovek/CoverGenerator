@@ -27,25 +27,25 @@ def test_get_all_palettes():
     Tests the get_all_palettes function.
     """
     palettes = cc.get_all_palettes()
-    assert len(palettes) == 8
-    assert palettes[0]["name"] == "BrightAnalogous"
-    assert palettes[0]["category"] == "ColorfulContrast"
-    assert len(palettes[0]["color_pairs"]) == 11
+    assert len(palettes) == 14
+    assert palettes[0]["name"] == "DarkColorContrastAnalogous"
+    assert palettes[0]["category"] == "DarkColorContrast"
+    assert len(palettes[0]["color_pairs"]) == 14
 
 def test_get_color_pair():
     """
     Tests the get_color_pair function.
     """
     # Test getting color pair from a known palette
-    primary, secondary = cc.get_color_pair("ColorfulContrast", "BrightTriadic", "2")
-    assert primary == "#ff7519"
-    assert secondary == "#074c23"
+    primary, secondary = cc.get_color_pair("Pastel", "PastelTriadic", "2")
+    assert primary == "#ffc199"
+    assert secondary == "#3d664d"
     # Test getting color pair from a random palette
     primary, secondary = cc.get_color_pair()
     assert not primary == "#ffffff"
     assert not secondary == "#000000"
     # Test getting color pair from an invalid palette
-    primary, secondary = cc.get_color_pair("NonExistant", "BrightTriadic", "2")
+    primary, secondary = cc.get_color_pair("NonExistant", "PastelTriadic", "2")
     assert primary == "#ffffff"
     assert secondary == "#000000"
 
