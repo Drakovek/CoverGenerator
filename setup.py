@@ -3,14 +3,14 @@
 import re
 import setuptools
 
-console_scripts = ["cover-generator = cover_generator.cover_generator:main"]
+console_scripts = ["cover-generator = cover_generator:main"]
 
 with open("README.md", "r") as file:
     long_description = file.read()
 
 setuptools.setup(
     name="CoverGenerator",
-    version="0.1.2",
+    version="0.2.0",
     author="Drakovek",
     author_email="DrakovekMail@gmail.com",
     description="Python utility for generating cover images for e-books.",

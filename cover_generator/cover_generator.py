@@ -7,7 +7,7 @@ import argparse
 import cairosvg
 import random
 import tempfile
-import html_string_tools.html
+import html_string_tools
 import cover_generator.color as cc
 import cover_generator.font_handling as fh
 from os.path import abspath, exists, join
@@ -49,7 +49,7 @@ def get_multiline_svg(text:str, glyph_sizes:dict, x:int, y:int, width:int, heigh
     text_size = fh.get_text_size(lines, glyph_sizes, width, height, height_multiplier=height_multiplier)
     # Replace all non-ASCII characters with XML/HTML escape characters
     for i in range(0, len(lines)):
-        lines[i] = html_string_tools.html.replace_reserved_characters(lines[i], True)
+        lines[i] = html_string_tools.replace_reserved_characters(lines[i], True)
     # Get the height of one line
     line_height = math.floor(text_size * height_multiplier)
     if len(lines) == 1:
